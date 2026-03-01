@@ -1,0 +1,70 @@
+
+services:
+
+  db:
+    image: postgres:16
+    container_name: anchor_db
+    restart: always
+    environment:
+      POSTGRES_USER: anchor
+      POSTGRES_PASSWORD: anchorpassword
+      POSTGRES_DB: anchor_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  minio:
+    image: minio/minio
+    container_name: anchor_minio
+    restart: always
+    environment:
+      MINIO_ROOT_USER: anchoradmin
+      MINIO_ROOT_PASSWORD: anchorpassword
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+
+  api:
+    build: ./api
+    container_name: anchor_api
+    restart: always
+    depends_on:
+      - db
+      - minio
+    environment:
+      DATABASE_URL: postgresql://anchor:anchorpassword@db:5432/anchor_db
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: anchoradmin
+      MINIO_SECRET_KEY: anchorpassword
+    ports:
+      - "8000:8000"
+
+  worker:
+    build: ./worker
+    container_name: anchor_worker
+    restart: always
+    depends_on:
+      - db
+      - minio
+    environment:
+      DATABASE_URL: postgresql://anchor:anchorpassword@db:5432/anchor_db
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: anchoradmin
+      MINIO_SECRET_KEY: anchorpassword
+
+  ui:
+    build: ./ui
+    container_name: anchor_ui
+    restart: always
+    depends_on:
+      - api
+    ports:
+      - "3000:80"
+
+volumes:
+  db_data:
+  minio_data:
