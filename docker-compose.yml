@@ -1,70 +1,42 @@
 
 services:
 
-  db:
-    image: postgres:16
-    container_name: anchor_db
-    restart: always
+  postgres:
+    image: postgres:15-alpine
     environment:
-      POSTGRES_USER: anchor
-      POSTGRES_PASSWORD: anchorpassword
-      POSTGRES_DB: anchor_db
-    ports:
-      - "5432:5432"
+      POSTGRES_DB: raas
+      POSTGRES_USER: raas
+      POSTGRES_PASSWORD: raas
+    ports: ["5432:5432"]
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
 
   minio:
-    image: minio/minio
-    container_name: anchor_minio
-    restart: always
-    environment:
-      MINIO_ROOT_USER: anchoradmin
-      MINIO_ROOT_PASSWORD: anchorpassword
+    image: minio/minio:latest
     command: server /data --console-address ":9001"
-    ports:
-      - "9000:9000"
-      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports: ["9000:9000", "9001:9001"]
     volumes:
       - minio_data:/data
 
   api:
     build: ./api
-    container_name: anchor_api
-    restart: always
-    depends_on:
-      - db
-      - minio
-    environment:
-      DATABASE_URL: postgresql://anchor:anchorpassword@db:5432/anchor_db
-      MINIO_ENDPOINT: minio:9000
-      MINIO_ACCESS_KEY: anchoradmin
-      MINIO_SECRET_KEY: anchorpassword
-    ports:
-      - "8000:8000"
+    depends_on: [postgres, minio]
+    env_file: ./api/.env
+    ports: ["8000:8000"]
 
   worker:
     build: ./worker
-    container_name: anchor_worker
-    restart: always
-    depends_on:
-      - db
-      - minio
-    environment:
-      DATABASE_URL: postgresql://anchor:anchorpassword@db:5432/anchor_db
-      MINIO_ENDPOINT: minio:9000
-      MINIO_ACCESS_KEY: anchoradmin
-      MINIO_SECRET_KEY: anchorpassword
+    depends_on: [postgres, minio]
+    env_file: ./worker/.env
 
   ui:
     build: ./ui
-    container_name: anchor_ui
-    restart: always
-    depends_on:
-      - api
-    ports:
-      - "3000:80"
+    depends_on: [api]
+    ports: ["3000:80"]
 
 volumes:
-  db_data:
+  postgres_data:
   minio_data:
