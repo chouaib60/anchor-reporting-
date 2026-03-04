@@ -13,10 +13,10 @@ class Settings(BaseSettings):
     minio_bucket_templates: str = "templates"
     minio_bucket_outputs: str = "outputs"
 
-    class Config:
+    class Config: # configuration de pydantic pour charger les valeurs depuis .env file
         env_file = ".env"
         env_file_encoding = "utf-8"
 
-@lru_cache()
+@lru_cache() 
 def get_settings() -> Settings:
     return Settings()
