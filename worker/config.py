@@ -14,7 +14,7 @@ class WorkerSettings(BaseSettings):
     worker_poll_interval_seconds: int = 5
     worker_job_timeout_seconds: int = 120
     worker_restart_after_jobs: int = 50
-    libreoffice_path: str = r"C:\Program Files\LibreOffice\program\soffice.exe"
+    libreoffice_path: str = "/usr/bin/libreoffice"
 
     class Config:
         env_file = ".env"
