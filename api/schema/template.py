@@ -1,7 +1,7 @@
 from pydantic import BaseModel, UUID4
 from datetime import datetime
 from typing import Optional
-from schemas.user import UserOut
+from schema.user import UserOut
 
 
 
