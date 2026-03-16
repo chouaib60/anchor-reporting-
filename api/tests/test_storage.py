@@ -16,6 +16,8 @@ def log(level, message):
     print(f"[{level}] {message}")
 
 
+# -- Test 1 : Initialisation des buckets --
+
 def test_init_buckets() -> bool:
     log("INFO", "=== TEST 1 : Initialisation des buckets ===")
     try:
@@ -26,6 +28,8 @@ def test_init_buckets() -> bool:
         log("ERROR", f"TEST 1 FAILED : {e}")
         return False
 
+
+# -- Test 2 : Upload d'un template DOCX --
 
 def test_upload_template() -> bool:
     log("INFO", "=== TEST 2 : Upload template DOCX ===")
@@ -39,6 +43,8 @@ def test_upload_template() -> bool:
         log("ERROR", f"TEST 2 FAILED : {e}")
         return False
 
+
+# -- Test 3 : Download d'un template DOCX --
 
 def test_download_template() -> bool:
     log("INFO", "=== TEST 3 : Download template DOCX ===")
@@ -54,6 +60,8 @@ def test_download_template() -> bool:
         return False
 
 
+# -- Test 4 : Upload d'un PDF genere --
+
 def test_upload_output() -> bool:
     log("INFO", "=== TEST 4 : Upload PDF output ===")
     try:
@@ -66,6 +74,8 @@ def test_upload_output() -> bool:
         log("ERROR", f"TEST 4 FAILED : {e}")
         return False
 
+
+# -- Test 5 : Download d'un PDF genere --
 
 def test_download_output() -> bool:
     log("INFO", "=== TEST 5 : Download PDF output ===")
@@ -81,6 +91,8 @@ def test_download_output() -> bool:
         return False
 
 
+# -- Test 6 : Lien de telechargement temporaire --
+
 def test_output_url() -> bool:
     log("INFO", "=== TEST 6 : Lien de telechargement temporaire ===")
     try:
@@ -94,6 +106,8 @@ def test_output_url() -> bool:
         log("ERROR", f"TEST 6 FAILED : {e}")
         return False
 
+
+# -- Main --
 
 if __name__ == "__main__":
     results = {
