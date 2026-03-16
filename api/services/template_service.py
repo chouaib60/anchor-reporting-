@@ -98,12 +98,20 @@ async def list_versions(conn: asyncpg.Connection, template_id: str) -> list[dict
 
 async def activate_version(conn: asyncpg.Connection, template_id: str, version: int) -> dict:
     await get_template(conn, template_id)
+
+    await conn.execute("""
+        UPDATE template_versions
+        SET is_active = FALSE
+        WHERE template_id = $1
+    """, uuid.UUID(template_id))
+
     row = await conn.fetchrow("""
         UPDATE template_versions
         SET is_active = TRUE
         WHERE template_id = $1 AND version = $2
         RETURNING id, version, object_key, is_active, created_at
     """, uuid.UUID(template_id), version)
+
     if not row:
         raise TemplateNotFoundError(f"Version {version} introuvable")
     return dict(row)
