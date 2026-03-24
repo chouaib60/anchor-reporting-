@@ -5,8 +5,7 @@ from contextlib import asynccontextmanager
 from core.logging import setup_logging, get_logger
 from core.errors import register_exception_handlers
 from core.config import get_settings
-from routers import health
-
+from routers import health, templates  
 settings = get_settings()
 setup_logging(settings.log_level)
 logger = get_logger(__name__)
@@ -32,7 +31,4 @@ app.add_middleware(
 
 register_exception_handlers(app)
 app.include_router(health.router, prefix="/health", tags=["Health"])
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+app.include_router(templates.router, prefix="/templates", tags=["Templates"])  
