@@ -5,7 +5,7 @@ from core.config import get_settings
 from core.rbac import check_permission
 from services import template_service
 from services.preview_service import generate_preview
-from schemas.template import TemplateCreate, TemplateUpdate
+from schema.template import TemplateCreate, TemplateUpdate
 
 router = APIRouter()
 settings = get_settings()
